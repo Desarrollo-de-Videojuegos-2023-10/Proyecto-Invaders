@@ -1,0 +1,32 @@
+{
+    "player": {
+        "sound": "assets/snd/player_die.ogg",
+        "image": "assets/img/invaders_player_explosion.png",
+        "animations" : {
+            "number_frames": 4,
+            "list": [
+                {
+                    "name": "IDLE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 4
+                }
+            ]
+        }
+    },
+    "enemy": {
+        "sound": "assets/snd/enemy_die.ogg",
+        "image": "assets/img/invaders_enemy_explosion.png",
+        "animations" : {
+            "number_frames": 4,
+            "list": [
+                {
+                    "name": "IDLE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 16
+                }
+            ]
+        }
+    }
+}

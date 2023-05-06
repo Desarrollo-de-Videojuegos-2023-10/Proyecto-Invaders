@@ -1,0 +1,15 @@
+{
+    "player": {
+        "sound": "assets/snd/player_shoot.ogg",
+        "color": {
+            "r": 255,
+            "g": 158,
+            "b": 57
+        },
+        "speed": 425,
+        "size": {
+            "x": 1,
+            "y": 3
+        }
+    }
+}

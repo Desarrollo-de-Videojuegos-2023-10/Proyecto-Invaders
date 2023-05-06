@@ -1,0 +1,14 @@
+import esper
+import pygame
+
+from src.ecs.components.c_transform import CTransform
+from src.ecs.components.c_surface import CSurface
+from src.ecs.components.tags.c_tag_bullet import CTagBullet
+
+
+def system_screen_bullet(world: esper.World, scr_rect: pygame.Rect):
+    components = world.get_components(CTransform, CSurface, CTagBullet)
+    for bullet_entity, (c_t, c_s, _) in components:
+        bullet_rect = CSurface.get_area_relative(c_s.area, c_t.pos)
+        if not scr_rect.contains(bullet_rect):
+            world.delete_entity(bullet_entity)
