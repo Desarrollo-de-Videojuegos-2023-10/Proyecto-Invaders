@@ -1,6 +1,9 @@
 import json
 import pygame
+from src.create.prefab_creator import create_starfield
 from src.ecs.systems.s_animation import system_animation
+from src.ecs.systems.s_blinking import system_blinking
+from src.ecs.systems.s_starfield_movement import system_starfield_movement
 from src.ecs.systems.s_temporary_remove import system_temporary_remove
 
 from src.engine.scenes.scene import Scene
@@ -26,8 +29,6 @@ class PlayScene(Scene):
             self.level_cfg = json.load(level_file)
         with open("assets/cfg/player.json") as player_file:
             self.player_cfg = json.load(player_file)
-        with open("assets/cfg/ball.json") as ball_file:
-            self.ball_cfg = json.load(ball_file)
         with open("assets/cfg/blocks.json") as blocks_file:
             self.blocks_cfg = json.load(blocks_file)
 
@@ -35,7 +36,7 @@ class PlayScene(Scene):
         self._paused = False
 
     def do_create(self):
-
+        create_starfield(self.ecs_world)
         create_play_field(self.ecs_world,
                           self.level_cfg["blocks_field"],
                           self.blocks_cfg)
@@ -60,6 +61,8 @@ class PlayScene(Scene):
         system_screen_player(self.ecs_world, self.screen_rect)
         system_screen_bullet(self.ecs_world, self.screen_rect)
         system_block_count(self.ecs_world, self)
+        system_starfield_movement(self.ecs_world, delta_time)
+        system_blinking(self.ecs_world, delta_time)
 
         if not self._paused:
             system_movement(self.ecs_world, delta_time)
