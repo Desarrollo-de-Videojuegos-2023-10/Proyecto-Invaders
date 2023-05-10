@@ -3,7 +3,8 @@
     "pos": {
       "x": 294,
       "y": 320
-    }
+    },
+    "max_bullets": 1
   },
   "enemy_starting_points": [
     {
@@ -50,5 +51,7 @@
         "y": 80
       }
     }
-  ]
+  ],
+  "enemy_attack_interval": 1,
+  "enemy_speed": 10
 }

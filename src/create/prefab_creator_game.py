@@ -3,6 +3,7 @@ import esper
 
 from src.create.prefab_creator import create_sprite
 from src.ecs.components.c_animation import CAnimation
+from src.ecs.components.c_enemy_state import CEnemyState
 from src.ecs.components.c_input_command import CInputCommand
 from src.ecs.components.tags.c_tag_temporary import CTagTemporary
 from src.ecs.components.tags.c_tag_bullet import CTagBullet
@@ -95,4 +96,5 @@ def create_enemies(world: esper.World, level_cfg:dict):
 
                 enemy_entity = create_sprite(world, enemy_pos, enemy_vel, enemy_surf)
                 world.add_component(enemy_entity, CTagEnemy())
+                world.add_component(enemy_entity, CEnemyState())
                 world.add_component(enemy_entity, CAnimation(enemy_cfg[enemy_type]["animations"]))

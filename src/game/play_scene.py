@@ -3,6 +3,8 @@ from src.create.prefab_creator import create_starfield
 from src.ecs.components.c_blink_item import CBlinkItem
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
+from src.ecs.systems.s_bullet_count import system_bullet_count
+from src.ecs.systems.s_enemy_movement import system_enemy_movement
 from src.ecs.systems.s_starfield_movement import system_starfield_movement
 from src.ecs.systems.s_temporary_remove import system_temporary_remove
 
@@ -30,7 +32,10 @@ class PlayScene(Scene):
         self.player_cfg = ServiceLocator.config_service.get("assets/cfg/player.json")
         self.enemies_cfg = ServiceLocator.config_service.get("assets/cfg/enemy_data.json")
         self.interface_cfg = ServiceLocator.config_service.get("assets/cfg/interface.json")["scene_texts"]
-
+        self.max_bullets = self.level_cfg["player_start"]["max_bullets"]
+        self.current_bullets = {
+            "bullet_count": 0
+        }
         self._player_ent = -1
         self._paused = False
 
@@ -55,6 +60,8 @@ class PlayScene(Scene):
 
         if not self._paused:
             system_movement(self.ecs_world, delta_time)
+            system_enemy_movement(self.ecs_world, self.level_cfg, delta_time)
+            system_bullet_count(self.ecs_world, self.current_bullets)
             system_collision_enemy_bullet(self.ecs_world)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
@@ -74,7 +81,7 @@ class PlayScene(Scene):
             elif action.phase == CommandPhase.END:
                 self._p_v.vel.x -= self.player_cfg["input_speed"]
 
-        if action.name == "PLAYER_FIRE" and not self._paused:
+        if action.name == "PLAYER_FIRE" and not self._paused and self.current_bullets["bullet_count"] < self.max_bullets:
             if action.phase == CommandPhase.START:
                 create_player_bullet(self.ecs_world,
                                      pygame.Vector2(

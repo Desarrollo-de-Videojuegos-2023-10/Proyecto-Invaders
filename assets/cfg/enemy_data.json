@@ -1,5 +1,7 @@
 {
     "launch_sound": "assets/snd/enemy_launch.ogg",
+    "movement_limit_left": 20,
+    "movement_limit_right": 226,
     "TypeA": {
         "score_value": 30,
         "score_value_attack": 60,
