@@ -42,19 +42,6 @@ def create_player_bullet(world: esper.World,
     ServiceLocator.sounds_service.play(bullet_cfg["sound"])
 
 
-def create_play_field(world: esper.World, blocks_field: dict, block_types: dict):
-    for element in blocks_field:
-        b_type = element["type"]
-        pos = pygame.Vector2(element["pos"]["x"],
-                             element["pos"]["y"])
-        create_block(world, b_type, block_types[b_type], pos)
-
-
-def create_block(world: esper.World, type: str, block_info: dict, pos: pygame.Vector2):
-    surf = ServiceLocator.images_service.get(block_info["image"])
-    block_ent = create_sprite(world, pos, None, surf)
-    world.add_component(block_ent, CTagEnemy(type))
-
 def create_explosion(world: esper.World, pos: pygame.Vector2, explosion_info: dict):
     explosion_surface = ServiceLocator.images_service.get(
         explosion_info["image"])
@@ -90,3 +77,22 @@ def create_game_input(world: esper.World):
     fire_action = world.create_entity()
     world.add_component(fire_action,
                         CInputCommand("PLAYER_FIRE", pygame.K_z))
+
+
+def create_enemies(world: esper.World, level_cfg:dict):
+    enemy_cfg = ServiceLocator.config_service.get("assets/cfg/enemy_data.json")
+
+    for enemy_type_spawn in level_cfg["enemy_starting_points"]:
+        pixel_offset_y = enemy_type_spawn["offset_y"]
+        pixel_offset_x = enemy_type_spawn["offset_x"]
+        enemy_type = enemy_type_spawn["type"]
+        enemy_surf = ServiceLocator.images_service.get(enemy_cfg[enemy_type]["image"])
+        for row in range(enemy_type_spawn["rows"]):
+            for column in range(enemy_type_spawn["columns"]):
+                enemy_pos = pygame.Vector2(enemy_type_spawn["pos"]["x"] + (column * pixel_offset_x),
+                                           enemy_type_spawn["pos"]["y"] + (row * pixel_offset_y))
+                enemy_vel = pygame.Vector2(0, 0)
+
+                enemy_entity = create_sprite(world, enemy_pos, enemy_vel, enemy_surf)
+                world.add_component(enemy_entity, CTagEnemy())
+                world.add_component(enemy_entity, CAnimation(enemy_cfg[enemy_type]["animations"]))

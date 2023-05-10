@@ -1,0 +1,91 @@
+{
+    "launch_sound": "assets/snd/enemy_launch.ogg",
+    "TypeA": {
+        "score_value": 30,
+        "score_value_attack": 60,
+        "image": "assets/img/invaders_enemy_01.png",
+        "animations": {
+            "number_frames": 5,
+            "list": [
+                {
+                    "name": "IDLE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 3
+                },
+                {
+                    "name": "ATTACK",
+                    "start": 0,
+                    "end": 0,
+                    "framerate": 1
+                }
+            ]
+        }
+    },
+    "TypeB": {
+        "score_value": 40,
+        "score_value_attack": 80,
+        "image": "assets/img/invaders_enemy_02.png",
+        "animations": {
+            "number_frames": 5,
+            "list": [
+                {
+                    "name": "IDLE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 3
+                },
+                {
+                    "name": "ATTACK",
+                    "start": 0,
+                    "end": 0,
+                    "framerate": 1
+                }
+            ]
+        }
+    },
+    "TypeC": {
+        "score_value": 50,
+        "score_value_attack": 100,
+        "image": "assets/img/invaders_enemy_03.png",
+        "animations": {
+            "number_frames": 5,
+            "list": [
+                {
+                    "name": "IDLE",
+                    "start": 0,
+                    "end": 4,
+                    "framerate": 3
+                },
+                {
+                    "name": "ATTACK",
+                    "start": 0,
+                    "end": 0,
+                    "framerate": 1
+                }
+            ]
+        }
+    },
+    "TypeD": {
+        "score_value": 60,
+        "score_value_attack": 800,
+        "image": "assets/img/invaders_enemy_04.png",
+        "animations": {
+            "number_frames": 1,
+            "list": [
+                {
+                    "name": "IDLE",
+                    "start": 0,
+                    "end": 0,
+                    "framerate": 3
+                },
+                {
+                    "name": "ATTACK",
+                    "start": 0,
+                    "end": 0,
+                    "framerate": 1
+                }
+            ]
+        }
+    }
+}

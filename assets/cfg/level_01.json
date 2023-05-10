@@ -5,53 +5,49 @@
       "y": 320
     }
   },
-  "ball_start": {
-    "pos": {
-      "x": 314,
-      "y": 200
-    }
-  },
-  "blocks_field": [
+  "enemy_starting_points": [
     {
-      "type": "B1",
+      "type": "TypeD",
+      "offset_x": 53,
+      "offset_y": 0,
+      "columns": 2,
+      "rows": 1,
       "pos": {
-        "x": 50,
-        "y": 100
+        "x": 94,
+        "y": 39
       }
     },
     {
-      "type": "B2",
+      "type": "TypeC",
+      "offset_x": 18,
+      "offset_y": 13,
+      "columns": 6,
+      "rows": 1,
       "pos": {
-        "x": 150,
-        "y": 100
+        "x": 77,
+        "y": 54
       }
     },
     {
-      "type": "B3",
+      "type": "TypeB",
+      "offset_x": 18,
+      "offset_y": 13,
+      "columns": 8,
+      "rows": 1,
       "pos": {
-        "x": 250,
-        "y": 100
+        "x": 58,
+        "y": 66
       }
     },
     {
-      "type": "B4",
+      "type": "TypeA",
+      "offset_x": 18,
+      "offset_y": 13,
+      "columns": 10,
+      "rows": 3,
       "pos": {
-        "x": 350,
-        "y": 100
-      }
-    },
-    {
-      "type": "B5",
-      "pos": {
-        "x": 450,
-        "y": 100
-      }
-    },
-    {
-      "type": "B6",
-      "pos": {
-        "x": 550,
-        "y": 100
+        "x": 42,
+        "y": 80
       }
     }
   ]
