@@ -28,10 +28,7 @@
         },
         "font": "assets/fnt/PressStart2P.ttf",
         "sound": "assets/snd/game_paused.ogg",
-        "blink_rate": {
-            "min": 0.25,
-            "max": 0.5
-        }
+        "blink_rate": 0.5
     },
     "over": {
         "text": "GAME OVER",

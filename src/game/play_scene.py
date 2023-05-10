@@ -104,9 +104,8 @@ class PlayScene(Scene):
                                                        self.texts_cfg["paused"]["pos"]["y"]),
                                         TextAlignment.CENTER)
                 ServiceLocator.sounds_service.play(self.texts_cfg["paused"]["sound"])
-                self.ecs_world.add_component(self._text, CBlinkItem(
-            random.uniform(self.texts_cfg["paused"]["blink_rate"]["min"], self.texts_cfg["paused"]["blink_rate"]["max"]),
-            random.uniform(self.texts_cfg["paused"]["blink_rate"]["min"], self.texts_cfg["paused"]["blink_rate"]["max"])))
+                self.ecs_world.add_component(self._text, CBlinkItem(self.texts_cfg["paused"]["blink_rate"],
+                                                                    self.texts_cfg["paused"]["blink_rate"]))
             elif self._paused == True and action.phase == CommandPhase.START:
                 self._paused = False
                 self.ecs_world.delete_entity(self._text)
