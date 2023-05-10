@@ -1,6 +1,8 @@
 import json
+import random
 import pygame
 from src.create.prefab_creator import create_starfield
+from src.ecs.components.c_blink_item import CBlinkItem
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_starfield_movement import system_starfield_movement
@@ -20,6 +22,7 @@ from src.ecs.systems.s_collision_ball_block import system_collision_enemy_bullet
 #from src.ecs.systems.s_collision_player_ball import system_collision_player_ball
 from src.ecs.systems.s_block_count import system_block_count
 import src.engine.game_engine
+from src.engine.service_locator import ServiceLocator
 
 
 class PlayScene(Scene):
@@ -31,6 +34,8 @@ class PlayScene(Scene):
             self.player_cfg = json.load(player_file)
         with open("assets/cfg/blocks.json") as blocks_file:
             self.blocks_cfg = json.load(blocks_file)
+        with open("assets/cfg/texts.json") as texts_file:
+            self.texts_cfg = json.load(texts_file)
 
         self._player_ent = -1
         self._paused = False
@@ -45,14 +50,6 @@ class PlayScene(Scene):
         self._p_v = self.ecs_world.component_for_entity(player_ent, CVelocity)
         self._p_t = self.ecs_world.component_for_entity(player_ent, CTransform)
         self._p_s = self.ecs_world.component_for_entity(player_ent, CSurface)
-
-        paused_text_ent = create_text(self.ecs_world, "PAUSED", 16,
-                                      pygame.Color(255, 50, 50), pygame.Vector2(
-                                          320, 180),
-                                      TextAlignment.CENTER)
-        self.p_txt_s = self.ecs_world.component_for_entity(
-            paused_text_ent, CSurface)
-        self.p_txt_s.visible = self._paused
 
         self._paused = False
         create_game_input(self.ecs_world)
@@ -69,7 +66,7 @@ class PlayScene(Scene):
             system_collision_enemy_bullet(self.ecs_world)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
-
+            
     def do_clean(self):
         self._paused = False
 
@@ -95,7 +92,22 @@ class PlayScene(Scene):
         if action.name == "QUIT_TO_MENU" and action.phase == CommandPhase.START:
             self.switch_scene("MENU_SCENE")
 
-        if action.name == "PAUSE" and action.phase == CommandPhase.START:
-            self._paused = not self._paused
-            self.p_txt_s.visible = self._paused
+        if action.name == "PAUSE":
+            if self._paused == False and action.phase == CommandPhase.START:
+                self._paused = True
+                self._text = create_text(self.ecs_world, self.texts_cfg["paused"]["text"], 
+                                        self.texts_cfg["paused"]["size"],
+                                        pygame.Color(self.texts_cfg["paused"]["color"]["r"], 
+                                                   self.texts_cfg["paused"]["color"]["g"], 
+                                                   self.texts_cfg["paused"]["color"]["b"]), 
+                                        pygame.Vector2(self.texts_cfg["paused"]["pos"]["x"], 
+                                                       self.texts_cfg["paused"]["pos"]["y"]),
+                                        TextAlignment.CENTER)
+                ServiceLocator.sounds_service.play(self.texts_cfg["paused"]["sound"])
+                self.ecs_world.add_component(self._text, CBlinkItem(
+            random.uniform(self.texts_cfg["paused"]["blink_rate"]["min"], self.texts_cfg["paused"]["blink_rate"]["max"]),
+            random.uniform(self.texts_cfg["paused"]["blink_rate"]["min"], self.texts_cfg["paused"]["blink_rate"]["max"])))
+            elif self._paused == True and action.phase == CommandPhase.START:
+                self._paused = False
+                self.ecs_world.delete_entity(self._text)
 
