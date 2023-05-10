@@ -82,7 +82,7 @@ class PlayScene(Scene):
             elif action.phase == CommandPhase.END:
                 self._p_v.vel.x -= self.player_cfg["input_speed"]
 
-        if action.name == "PLAYER_FIRE":
+        if action.name == "PLAYER_FIRE" and not self._paused:
             if action.phase == CommandPhase.START:
                 create_player_bullet(self.ecs_world,
                     pygame.Vector2(self._p_t.pos.x, self._p_t.pos.y),
