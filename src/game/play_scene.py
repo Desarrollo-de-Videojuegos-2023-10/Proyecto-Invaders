@@ -5,6 +5,7 @@ from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_bullet_count import system_bullet_count
 from src.ecs.systems.s_enemy_movement import system_enemy_movement
+from src.ecs.systems.s_enemy_spawn import system_enemy_spawn
 from src.ecs.systems.s_starfield_movement import system_starfield_movement
 from src.ecs.systems.s_temporary_remove import system_temporary_remove
 
@@ -40,8 +41,19 @@ class PlayScene(Scene):
         self._paused = False
 
     def do_create(self):
+        self._start = create_text(self.ecs_world, self.interface_cfg["start"]["text"],
+                                         self.interface_cfg["start"]["size"],
+                                         pygame.Color(self.interface_cfg["start"]["color"]["r"],
+                                                      self.interface_cfg["start"]["color"]["g"],
+                                                      self.interface_cfg["start"]["color"]["b"]),
+                                         pygame.Vector2(self.interface_cfg["start"]["pos"]["x"],
+                                                        self.interface_cfg["start"]["pos"]["y"]),
+                                         TextAlignment.CENTER)
+        ServiceLocator.sounds_service.play(self.interface_cfg["start"]["sound"])
+        self._time = pygame.time.get_ticks()/ 1000.0
+        self._starting = False
         create_starfield(self.ecs_world)
-        create_enemies(self.ecs_world, self.level_cfg)
+        self._enemy = False
 
         player_ent = create_player(self.ecs_world)
         self._p_v = self.ecs_world.component_for_entity(player_ent, CVelocity)
@@ -54,17 +66,23 @@ class PlayScene(Scene):
     def do_update(self, delta_time: float):
         system_screen_player(self.ecs_world, self.screen_rect)
         system_screen_bullet(self.ecs_world, self.screen_rect)
-        system_block_count(self.ecs_world, self)
         system_starfield_movement(self.ecs_world, delta_time)
         system_blinking(self.ecs_world, delta_time)
-
-        if not self._paused:
+        self._tick = pygame.time.get_ticks()/ 1000.0
+        if ( self._tick  - self._time) >= 2 and self._starting == False:
+            self.ecs_world.delete_entity(self._start)
+            self._starting = True
+        if not self._paused and self._starting == True:
+            if self._enemy == False:
+                system_enemy_spawn(self.ecs_world, self.level_cfg)
+                self._enemy = True
             system_movement(self.ecs_world, delta_time)
             system_enemy_movement(self.ecs_world, self.level_cfg, delta_time)
             system_bullet_count(self.ecs_world, self.current_bullets)
             system_collision_enemy_bullet(self.ecs_world)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
+            system_block_count(self.ecs_world, self)
 
     def do_clean(self):
         self._paused = False
