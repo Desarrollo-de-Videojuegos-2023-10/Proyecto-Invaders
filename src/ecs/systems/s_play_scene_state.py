@@ -7,6 +7,7 @@ def system_play_state(world: esper.World, c_ps: CPlayState, level_cfg:dict, star
     if c_ps.state == PlayState.START:
         c_ps.time += delta_time
         if c_ps.time > 2.5:
+            c_ps.time = 0
             world.delete_entity(start_text_entity)
             create_enemies(world, level_cfg)
             c_ps.state = PlayState.PLAYING
