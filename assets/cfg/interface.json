@@ -18,7 +18,7 @@
   "scene_texts": {
     "start": {
       "text": "GAME START",
-      "size": 13,
+      "size": 8,
       "color": {
         "r": 255,
         "g": 255,
