@@ -3,7 +3,7 @@ import esper
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.ecs.components.tags.c_tag_enemy import CTagEnemy
-from src.ecs.components.tags.c_tag_bullet import CTagBullet
+from src.ecs.components.tags.c_tag_bullet import BulletType, CTagBullet
 from src.create.prefab_creator_game import create_explosion
 from src.engine.service_locator import ServiceLocator
 
@@ -16,9 +16,9 @@ def system_collision_enemy_bullet(world: esper.World):
 
     for enemy_entity, (c_s, c_t, _) in components_enemy:
         ene_rect = CSurface.get_area_relative(c_s.area, c_t.pos)
-        for bullet_entity, (c_b_s, c_b_t, _) in components_bullet:
+        for bullet_entity, (c_b_s, c_b_t, c_tag_bullet) in components_bullet:
             bull_rect = CSurface.get_area_relative(c_b_s.area, c_b_t.pos)
-            if ene_rect.colliderect(bull_rect):
+            if ene_rect.colliderect(bull_rect) and c_tag_bullet.type == BulletType.PLAYER:
                 world.delete_entity(enemy_entity)
                 world.delete_entity(bullet_entity)
                 create_explosion(world, c_t.pos, explosion_info["enemy"])

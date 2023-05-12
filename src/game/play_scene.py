@@ -2,11 +2,13 @@ import pygame
 from src.create.prefab_creator import create_starfield
 from src.ecs.components.c_blink_item import CBlinkItem
 from src.ecs.components.c_play_state import CPlayState, PlayState
+from src.ecs.components.c_player_state import CPlayerState, PlayerState
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_bullet_count import system_bullet_count
 from src.ecs.systems.s_collision_player_bullet import system_collision_player_bullet
 from src.ecs.systems.s_enemy_movement import system_enemy_movement
+from src.ecs.systems.s_enemy_shooting import system_enemy_shooting
 from src.ecs.systems.s_play_scene_state import system_play_state
 from src.ecs.systems.s_player_state import system_player_state
 from src.ecs.systems.s_starfield_movement import system_starfield_movement
@@ -55,10 +57,10 @@ class PlayScene(Scene):
                                                       self.interface_cfg["start"]["pos"]["y"]),
                                        TextAlignment.CENTER)
         create_starfield(self.ecs_world)
-        self._c_play_state_e = self.ecs_world.create_entity()
-        self.ecs_world.add_component(self._c_play_state_e, CPlayState())
+        self._c_scene_state_e = self.ecs_world.create_entity()
+        self.ecs_world.add_component(self._c_scene_state_e, CPlayState())
         self._c_play_state = self.ecs_world.component_for_entity(
-            self._c_play_state_e, CPlayState)
+            self._c_scene_state_e, CPlayState)
 
         ServiceLocator.sounds_service.play(
             self.interface_cfg["start"]["sound"])
@@ -67,6 +69,7 @@ class PlayScene(Scene):
         self._p_v = self.ecs_world.component_for_entity(player_ent, CVelocity)
         self._p_t = self.ecs_world.component_for_entity(player_ent, CTransform)
         self._p_s = self.ecs_world.component_for_entity(player_ent, CSurface)
+        self._p_state = self.ecs_world.component_for_entity(player_ent, CPlayerState)
 
         self._paused = False
         create_game_input(self.ecs_world)
@@ -82,6 +85,7 @@ class PlayScene(Scene):
         if not self._paused:
             system_movement(self.ecs_world, delta_time)
             system_enemy_movement(self.ecs_world, self.level_cfg, delta_time)
+            system_enemy_shooting(self.ecs_world)
             system_bullet_count(self.ecs_world, self.current_bullets)
             system_collision_enemy_bullet(self.ecs_world)
             system_collision_player_bullet(self.ecs_world)
@@ -104,7 +108,7 @@ class PlayScene(Scene):
             elif action.phase == CommandPhase.END:
                 self._p_v.vel.x -= self.player_cfg["input_speed"]
 
-        if action.name == "PLAYER_FIRE" and not self._paused and self._c_play_state.state == PlayState.PLAYING and self.current_bullets["bullet_count"] < self.max_bullets:
+        if action.name == "PLAYER_FIRE" and not self._paused and self._c_play_state.state == PlayState.PLAYING and self.current_bullets["bullet_count"] < self.max_bullets and self._p_state.state == PlayerState.IDLE:
             if action.phase == CommandPhase.START:
                 create_player_bullet(self.ecs_world,
                                      pygame.Vector2(

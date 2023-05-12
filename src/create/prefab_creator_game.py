@@ -37,20 +37,34 @@ def create_player_bullet(world: esper.World,
     color = pygame.Color(
         bullet_cfg["color"]["r"], bullet_cfg["color"]["g"], bullet_cfg["color"]["b"])
     pos = pygame.Vector2(player_pos.x + (player_size[0] / 2) - (bullet_size[0] / 2),
-                         player_pos.y + (player_size[1] / 2) - (bullet_size[1] / 2))
+                         player_pos.y + (player_size[1]) - (bullet_size[1]))
     vel = pygame.Vector2(0, -bullet_cfg["speed"])
 
     bullet_entity = create_square(world, bullet_size, color, pos, vel)
     world.add_component(bullet_entity, CTagBullet(BulletType.PLAYER))
     ServiceLocator.sounds_service.play(bullet_cfg["sound"])
 
+def create_enemy_bullet(world: esper.World, enemy_pos: pygame.Vector2, enemy_size: pygame.Vector2):
+    bullet_cfg = ServiceLocator.config_service.get(
+        "assets/cfg/bullet.json")["enemy"]
+    bullet_size = pygame.Vector2(
+        bullet_cfg["size"]["x"], bullet_cfg["size"]["y"])
+    color = pygame.Color(
+        bullet_cfg["color"]["r"], bullet_cfg["color"]["g"], bullet_cfg["color"]["b"])
+    pos = pygame.Vector2(enemy_pos.x + (enemy_size[0] / 2) - (bullet_size[0] / 2),
+                         enemy_pos.y + (enemy_size[1]) - (bullet_size[1]))
+    vel = pygame.Vector2(0, bullet_cfg["speed"])
+
+    bullet_entity = create_square(world, bullet_size, color, pos, vel)
+    world.add_component(bullet_entity, CTagBullet(BulletType.ENEMY))
 
 def create_explosion(world: esper.World, pos: pygame.Vector2, explosion_info: dict):
+    explosion_pos = pos.copy()
     explosion_surface = ServiceLocator.images_service.get(
         explosion_info["image"])
     vel = pygame.Vector2(0, 0)
 
-    explosion_entity = create_sprite(world, pos, vel, explosion_surface)
+    explosion_entity = create_sprite(world, explosion_pos, vel, explosion_surface)
     world.add_component(explosion_entity, CTagTemporary())
     world.add_component(explosion_entity,
                         CAnimation(explosion_info["animations"]))
