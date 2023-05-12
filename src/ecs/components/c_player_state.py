@@ -1,11 +1,13 @@
 from enum import Enum
 
+
 class PlayerState(Enum):
-    IDLE = 0
+    ALIVE = 0
     DEAD = 1
 
+
 class CPlayerState:
-    def __init__(self, lives:int):
-        self.state = PlayerState.IDLE
+    def __init__(self, lives: int):
+        self.state = PlayerState.ALIVE
         self.respawn_time = 0
         self.lives = lives

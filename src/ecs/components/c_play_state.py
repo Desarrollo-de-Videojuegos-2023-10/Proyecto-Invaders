@@ -4,7 +4,8 @@ class PlayState(Enum):
     START = 0
     PLAYING = 1
     WIN = 2
-    LOSE = 3
+    GAME_OVER = 3
+    END = 4
 
 
 

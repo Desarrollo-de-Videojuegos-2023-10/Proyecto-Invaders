@@ -59,7 +59,7 @@ class PlayScene(Scene):
         create_starfield(self.ecs_world)
         self._c_scene_state_e = self.ecs_world.create_entity()
         self.ecs_world.add_component(self._c_scene_state_e, CPlayState())
-        self._c_play_state = self.ecs_world.component_for_entity(
+        self._c_scene_state = self.ecs_world.component_for_entity(
             self._c_scene_state_e, CPlayState)
 
         ServiceLocator.sounds_service.play(
@@ -69,7 +69,8 @@ class PlayScene(Scene):
         self._p_v = self.ecs_world.component_for_entity(player_ent, CVelocity)
         self._p_t = self.ecs_world.component_for_entity(player_ent, CTransform)
         self._p_s = self.ecs_world.component_for_entity(player_ent, CSurface)
-        self._p_state = self.ecs_world.component_for_entity(player_ent, CPlayerState)
+        self._p_state = self.ecs_world.component_for_entity(
+            player_ent, CPlayerState)
 
         self._paused = False
         create_game_input(self.ecs_world)
@@ -79,16 +80,17 @@ class PlayScene(Scene):
         system_screen_bullet(self.ecs_world, self.screen_rect)
         system_starfield_movement(self.ecs_world, delta_time)
         system_blinking(self.ecs_world, delta_time)
-        system_play_state(self.ecs_world, self._c_play_state,
-                          self.level_cfg, self._start_text, delta_time)
+        system_play_state(self.ecs_world, self._c_scene_state,
+                          self.level_cfg, self._start_text, self.interface_cfg, delta_time)
 
         if not self._paused:
             system_movement(self.ecs_world, delta_time)
             system_enemy_movement(self.ecs_world, self.level_cfg, delta_time)
-            system_enemy_shooting(self.ecs_world)
-            system_bullet_count(self.ecs_world, self.current_bullets)
-            system_collision_enemy_bullet(self.ecs_world)
-            system_collision_player_bullet(self.ecs_world)
+            if self._c_scene_state.state == PlayState.PLAYING:
+                system_enemy_shooting(self.ecs_world)
+                system_bullet_count(self.ecs_world, self.current_bullets)
+                system_collision_enemy_bullet(self.ecs_world)
+                system_collision_player_bullet(self.ecs_world)
             system_player_state(self.ecs_world, delta_time)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
@@ -108,7 +110,7 @@ class PlayScene(Scene):
             elif action.phase == CommandPhase.END:
                 self._p_v.vel.x -= self.player_cfg["input_speed"]
 
-        if action.name == "PLAYER_FIRE" and not self._paused and self._c_play_state.state == PlayState.PLAYING and self.current_bullets["bullet_count"] < self.max_bullets and self._p_state.state == PlayerState.IDLE:
+        if action.name == "PLAYER_FIRE" and not self._paused and self._c_scene_state.state == PlayState.PLAYING and self.current_bullets["bullet_count"] < self.max_bullets and self._p_state.state == PlayerState.ALIVE:
             if action.phase == CommandPhase.START:
                 create_player_bullet(self.ecs_world,
                                      pygame.Vector2(

@@ -47,9 +47,9 @@
       "sound": "assets/snd/game_paused.ogg",
       "blink_rate": 0.5
     },
-    "over": {
+    "game_over": {
       "text": "GAME OVER",
-      "size": 16,
+      "size": 8,
       "color": {
         "r": 255,
         "g": 255,

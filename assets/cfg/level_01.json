@@ -53,5 +53,6 @@
     }
   ],
   "enemy_attack_interval": 1,
-  "enemy_speed": 10
+  "enemy_speed": 10,
+  "game_over_sfx": "assets/snd/game_over.ogg"
 }
