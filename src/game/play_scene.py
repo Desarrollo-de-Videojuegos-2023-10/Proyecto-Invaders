@@ -5,8 +5,10 @@ from src.ecs.components.c_play_state import CPlayState, PlayState
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_bullet_count import system_bullet_count
+from src.ecs.systems.s_collision_player_bullet import system_collision_player_bullet
 from src.ecs.systems.s_enemy_movement import system_enemy_movement
 from src.ecs.systems.s_play_scene_state import system_play_state
+from src.ecs.systems.s_player_state import system_player_state
 from src.ecs.systems.s_starfield_movement import system_starfield_movement
 from src.ecs.systems.s_temporary_remove import system_temporary_remove
 
@@ -20,7 +22,7 @@ from src.ecs.components.c_velocity import CVelocity
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_screen_bullet import system_screen_bullet
 from src.ecs.systems.s_screen_player import system_screen_player
-from src.ecs.systems.s_collision_ball_block import system_collision_enemy_bullet
+from src.ecs.systems.s_collision_enemy_bullet import system_collision_enemy_bullet
 # from src.ecs.systems.s_collision_player_ball import system_collision_player_ball
 import src.engine.game_engine
 from src.engine.service_locator import ServiceLocator
@@ -82,6 +84,8 @@ class PlayScene(Scene):
             system_enemy_movement(self.ecs_world, self.level_cfg, delta_time)
             system_bullet_count(self.ecs_world, self.current_bullets)
             system_collision_enemy_bullet(self.ecs_world)
+            system_collision_player_bullet(self.ecs_world)
+            system_player_state(self.ecs_world, delta_time)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
 

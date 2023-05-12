@@ -5,10 +5,11 @@ from src.create.prefab_creator import create_sprite
 from src.ecs.components.c_animation import CAnimation
 from src.ecs.components.c_enemy_state import CEnemyState
 from src.ecs.components.c_input_command import CInputCommand
+from src.ecs.components.c_player_state import CPlayerState
 from src.ecs.components.tags.c_tag_temporary import CTagTemporary
-from src.ecs.components.tags.c_tag_bullet import CTagBullet
+from src.ecs.components.tags.c_tag_bullet import BulletType, CTagBullet
 from src.ecs.components.tags.c_tag_enemy import CTagEnemy
-from src.ecs.components.tags.c_tag_player import CTagplayer
+from src.ecs.components.tags.c_tag_player import CTagPlayer
 from src.engine.service_locator import ServiceLocator
 from src.create.prefab_creator import create_square
 
@@ -21,7 +22,8 @@ def create_player(world: esper.World):
                          ["x"], player_cfg["spawn_point"]["y"])
     vel = pygame.Vector2(0, 0)
     player_ent = create_sprite(world, pos, vel, surf)
-    world.add_component(player_ent, CTagplayer(player_cfg["lives"]))
+    world.add_component(player_ent, CTagPlayer())
+    world.add_component(player_ent, CPlayerState(player_cfg["lives"]))
     return player_ent
 
 
@@ -39,7 +41,7 @@ def create_player_bullet(world: esper.World,
     vel = pygame.Vector2(0, -bullet_cfg["speed"])
 
     bullet_entity = create_square(world, bullet_size, color, pos, vel)
-    world.add_component(bullet_entity, CTagBullet())
+    world.add_component(bullet_entity, CTagBullet(BulletType.PLAYER))
     ServiceLocator.sounds_service.play(bullet_cfg["sound"])
 
 
@@ -80,21 +82,24 @@ def create_game_input(world: esper.World):
                         CInputCommand("PLAYER_FIRE", pygame.K_z))
 
 
-def create_enemies(world: esper.World, level_cfg:dict):
+def create_enemies(world: esper.World, level_cfg: dict):
     enemy_cfg = ServiceLocator.config_service.get("assets/cfg/enemy_data.json")
 
     for enemy_type_spawn in level_cfg["enemy_starting_points"]:
         pixel_offset_y = enemy_type_spawn["offset_y"]
         pixel_offset_x = enemy_type_spawn["offset_x"]
         enemy_type = enemy_type_spawn["type"]
-        enemy_surf = ServiceLocator.images_service.get(enemy_cfg[enemy_type]["image"])
+        enemy_surf = ServiceLocator.images_service.get(
+            enemy_cfg[enemy_type]["image"])
         for row in range(enemy_type_spawn["rows"]):
             for column in range(enemy_type_spawn["columns"]):
                 enemy_pos = pygame.Vector2(enemy_type_spawn["pos"]["x"] + (column * pixel_offset_x),
                                            enemy_type_spawn["pos"]["y"] + (row * pixel_offset_y))
                 enemy_vel = pygame.Vector2(0, 0)
 
-                enemy_entity = create_sprite(world, enemy_pos, enemy_vel, enemy_surf)
+                enemy_entity = create_sprite(
+                    world, enemy_pos, enemy_vel, enemy_surf)
                 world.add_component(enemy_entity, CTagEnemy())
                 world.add_component(enemy_entity, CEnemyState())
-                world.add_component(enemy_entity, CAnimation(enemy_cfg[enemy_type]["animations"]))
+                world.add_component(enemy_entity, CAnimation(
+                    enemy_cfg[enemy_type]["animations"]))
