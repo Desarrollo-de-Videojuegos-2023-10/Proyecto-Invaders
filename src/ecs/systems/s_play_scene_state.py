@@ -1,6 +1,6 @@
 import esper
 import pygame
-from src.create.prefab_creator_interface import TextAlignment, create_text
+from src.create.prefab_creator_interface import TextAlignment, create_lives_gui, create_text
 from src.ecs.components.c_play_state import CPlayState, PlayState
 from src.create.prefab_creator_game import create_enemies
 from src.ecs.components.c_player_state import CPlayerState
@@ -8,18 +8,19 @@ from src.ecs.components.tags.c_tag_enemy import CTagEnemy
 from src.engine.service_locator import ServiceLocator
 
 
-def system_play_state(world: esper.World, c_ps: CPlayState, level_cfg: dict, start_text_entity: dict, interface_cfg: dict, delta_time: float):
+def system_play_state(world: esper.World, c_ps: CPlayState, level_cfg: dict, start_text_entity: dict, interface_cfg: dict, player_cfg:dict, delta_time: float):
     player_state_components = world.get_component(CPlayerState)
     if c_ps.state == PlayState.START:
         c_ps.time += delta_time
         if c_ps.time > 2.5:
             c_ps.time = 0
             world.delete_entity(start_text_entity)
+            create_lives_gui(world, player_cfg["lives"])
             create_enemies(world, level_cfg)
             c_ps.state = PlayState.PLAYING
     elif c_ps.state == PlayState.PLAYING:
         for player_entity, (c_pstate) in player_state_components:
-            if c_pstate.lives == 0:
+            if c_pstate.lives < 0:
                 c_ps.state = PlayState.GAME_OVER
                 c_ps.time = 0
                 world.delete_entity(player_entity)

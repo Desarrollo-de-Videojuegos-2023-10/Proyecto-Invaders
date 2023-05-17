@@ -81,7 +81,7 @@ class PlayScene(Scene):
         system_starfield_movement(self.ecs_world, delta_time)
         system_blinking(self.ecs_world, delta_time)
         system_play_state(self.ecs_world, self._c_scene_state,
-                          self.level_cfg, self._start_text, self.interface_cfg, delta_time)
+                          self.level_cfg, self._start_text, self.interface_cfg, self.player_cfg, delta_time)
 
         if not self._paused:
             system_movement(self.ecs_world, delta_time)

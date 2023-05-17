@@ -61,6 +61,13 @@
       },
       "font": "assets/fnt/PressStart2P.ttf",
       "sound": "assets/snd/game_over.ogg"
+    },
+    "lives": {
+      "image": "assets/img/invaders_life.png",
+      "pos": {
+        "x": 160,
+        "y": 26
+      }
     }
   }
 }
