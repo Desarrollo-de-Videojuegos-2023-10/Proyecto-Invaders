@@ -17,7 +17,7 @@ from src.ecs.systems.s_temporary_remove import system_temporary_remove
 
 from src.engine.scenes.scene import Scene
 from src.create.prefab_creator_game import create_player_bullet, create_game_input, create_player
-from src.create.prefab_creator_interface import TextAlignment, create_text
+from src.create.prefab_creator_interface import TextAlignment, create_interface, create_text
 from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
@@ -58,6 +58,7 @@ class PlayScene(Scene):
                                                       self.interface_cfg["start"]["pos"]["y"]),
                                        TextAlignment.CENTER)
         create_starfield(self.ecs_world)
+        create_interface(self.ecs_world, self.player_cfg["lives"])
         self._c_scene_state_e = self.ecs_world.create_entity()
         self.ecs_world.add_component(self._c_scene_state_e, CPlayState())
         self._c_scene_state = self.ecs_world.component_for_entity(
@@ -123,7 +124,7 @@ class PlayScene(Scene):
         if action.name == "QUIT_TO_MENU" and action.phase == CommandPhase.START:
             self.switch_scene("MENU_SCENE")
 
-        if action.name == "PAUSE":
+        if action.name == "PAUSE" and self._c_scene_state.state == PlayState.PLAYING:
             if self._paused == False and action.phase == CommandPhase.START:
                 self._paused = True
                 self._text = create_text(self.ecs_world, self.interface_cfg["paused"]["text"],

@@ -5,7 +5,7 @@ from src.ecs.systems.s_starfield_movement import system_starfield_movement
 
 from src.engine.scenes.scene import Scene
 from src.create.prefab_creator_interface import TextAlignment, create_text
-from src.ecs.components.c_input_command import CInputCommand
+from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 
 class MenuScene(Scene):
 
@@ -27,6 +27,6 @@ class MenuScene(Scene):
         system_blinking(self.ecs_world, delta_time)
 
     def do_action(self, action: CInputCommand):
-        if action.name == "START_GAME":
+        if action.name == "START_GAME" and action.phase == CommandPhase.START:
             self.switch_scene("LEVEL_01")
 

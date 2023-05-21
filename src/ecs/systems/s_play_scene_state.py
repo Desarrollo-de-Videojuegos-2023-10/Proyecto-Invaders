@@ -2,7 +2,7 @@ import esper
 import pygame
 from src.create.prefab_creator_interface import TextAlignment, create_interface, create_text
 from src.ecs.components.c_play_state import CPlayState, PlayState
-from src.create.prefab_creator_game import create_enemies
+from src.create.prefab_creator_game import create_enemies, create_game_over_input
 from src.ecs.components.c_player_state import CPlayerState
 from src.ecs.components.c_score import CScore
 from src.ecs.components.tags.c_tag_enemy import CTagEnemy
@@ -16,9 +16,9 @@ def system_play_state(world: esper.World, c_ps: CPlayState, level_cfg: dict, sta
         if c_ps.time > 2.5:
             c_ps.time = 0
             world.delete_entity(start_text_entity)
-            create_interface(world, player_cfg["lives"])
             create_enemies(world, level_cfg)
             c_ps.state = PlayState.PLAYING
+
     elif c_ps.state == PlayState.PLAYING:
         for player_entity, (c_pstate) in player_state_components:
             if c_pstate.lives < 0:
@@ -27,6 +27,7 @@ def system_play_state(world: esper.World, c_ps: CPlayState, level_cfg: dict, sta
                 world.delete_entity(player_entity)
         if is_lvl_complete(world):
             c_ps.state = PlayState.WIN
+
     elif c_ps.state == PlayState.GAME_OVER:
         c_ps.time += delta_time
         if c_ps.time > 4.5:
@@ -40,8 +41,10 @@ def system_play_state(world: esper.World, c_ps: CPlayState, level_cfg: dict, sta
                         pygame.Vector2(interface_cfg["game_over"]["pos"]["x"],
                                     interface_cfg["game_over"]["pos"]["y"]),
                         TextAlignment.CENTER)
+
     elif c_ps.state == PlayState.END:
         if not c_ps.already_saved:
+            create_game_over_input(world)
             save_scores(world, c_ps)
     elif c_ps.state == PlayState.WIN:
         if not c_ps.already_saved:

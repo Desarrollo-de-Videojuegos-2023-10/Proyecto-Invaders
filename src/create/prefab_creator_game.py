@@ -95,6 +95,12 @@ def create_game_input(world: esper.World):
     world.add_component(fire_action,
                         CInputCommand("PLAYER_FIRE", pygame.K_z))
 
+def create_game_over_input(world: esper.World):
+    quit_to_menu_action = world.create_entity()
+    world.add_component(quit_to_menu_action,
+                        CInputCommand("QUIT_TO_MENU",
+                                      pygame.K_z))
+
 
 def create_enemies(world: esper.World, level_cfg: dict):
     enemy_cfg = ServiceLocator.config_service.get("assets/cfg/enemy_data.json")
