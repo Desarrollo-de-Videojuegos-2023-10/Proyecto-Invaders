@@ -7,6 +7,7 @@ from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_bullet_count import system_bullet_count
 from src.ecs.systems.s_collision_player_bullet import system_collision_player_bullet
+from src.ecs.systems.s_enemies_count import system_enemies_count
 from src.ecs.systems.s_enemy_movement import system_enemy_movement
 from src.ecs.systems.s_enemy_shooting import system_enemy_shooting
 from src.ecs.systems.s_play_scene_state import system_play_state
@@ -16,7 +17,7 @@ from src.ecs.systems.s_temporary_remove import system_temporary_remove
 
 from src.engine.scenes.scene import Scene
 from src.create.prefab_creator_game import create_player_bullet, create_game_input, create_player
-from src.create.prefab_creator_interface import TextAlignment, create_text
+from src.create.prefab_creator_interface import TextAlignment, create_levels_gui, create_text
 from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
@@ -71,6 +72,7 @@ class PlayScene(Scene):
         self._p_s = self.ecs_world.component_for_entity(player_ent, CSurface)
         self._p_state = self.ecs_world.component_for_entity(
             player_ent, CPlayerState)
+        
 
         self._paused = False
         create_game_input(self.ecs_world)
@@ -91,7 +93,8 @@ class PlayScene(Scene):
                 system_bullet_count(self.ecs_world, self.current_bullets)
                 system_collision_enemy_bullet(self.ecs_world)
                 system_collision_player_bullet(self.ecs_world)
-            system_player_state(self.ecs_world, delta_time)
+                system_enemies_count(self.ecs_world, self, self._p_state, self.player_cfg)
+            system_player_state(self.ecs_world, delta_time, self.player_cfg)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
 

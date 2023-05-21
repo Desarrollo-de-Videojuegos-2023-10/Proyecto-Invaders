@@ -1,22 +1,31 @@
+import json
 import esper
 from src.create.prefab_creator_game import create_explosion
+from src.create.prefab_creator_interface import create_levels_gui
+from src.ecs.components.c_levels import CLevels
 from src.ecs.components.c_lives import CLives
+from src.ecs.components.c_play_state import CPlayState, PlayState
 from src.ecs.components.c_player_state import CPlayerState, PlayerState
 from src.ecs.components.c_surface import CSurface
 from src.ecs.components.c_transform import CTransform
 from src.engine.service_locator import ServiceLocator
 
 
-def system_player_state(world: esper.World, delta_time: float):
+def system_player_state(world: esper.World, delta_time: float, player: dict):
     player_components = world.get_components(
         CSurface, CTransform, CPlayerState)
+    play_state_components = world.get_component(CPlayState)
     lives_gui_components = world.get_component(CLives)
+    level_gui_components = world.get_component(CLevels)
 
     c_s: CSurface
     c_t: CTransform
     c_pstate: CPlayerState
     for _, (c_s, c_t, c_pstate) in player_components:
         if c_pstate.state == PlayerState.DEAD:
+            player["level"] =  1
+            with open("assets/cfg/player.json", 'w') as archivo_nuevo:
+                json.dump(player, archivo_nuevo, indent=4)
             c_pstate.respawn_time += delta_time
             if c_pstate.respawn_time > 3 and c_pstate.lives > -1:
                 player_cfg = ServiceLocator.config_service.get(
@@ -28,6 +37,11 @@ def system_player_state(world: esper.World, delta_time: float):
                 for _, c_lives in lives_gui_components:
                     entity_to_remove = c_lives.live_entities.pop()
                     world.delete_entity(entity_to_remove)
+    for _, (c_ps) in play_state_components:
+        if c_ps.state == PlayState.WIN:
+                for _, c_level in level_gui_components:
+                    entity = create_levels_gui(world, 1)
+                    entity_to_remove = c_level.levels_entities.append(entity)
 
 
 def kill_player(world: esper.World, c_t: CTransform, c_s: CSurface, c_pstate: CPlayerState):

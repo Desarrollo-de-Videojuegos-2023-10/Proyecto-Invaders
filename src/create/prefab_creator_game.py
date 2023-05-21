@@ -23,7 +23,7 @@ def create_player(world: esper.World):
     vel = pygame.Vector2(0, 0)
     player_ent = create_sprite(world, pos, vel, surf)
     world.add_component(player_ent, CTagPlayer())
-    world.add_component(player_ent, CPlayerState(player_cfg["lives"]))
+    world.add_component(player_ent, CPlayerState(player_cfg["lives"],player_cfg["level"]))
     return player_ent
 
 

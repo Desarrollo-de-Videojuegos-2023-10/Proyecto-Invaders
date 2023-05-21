@@ -2,6 +2,7 @@ from enum import Enum
 import pygame
 import esper
 from src.create.prefab_creator import create_sprite
+from src.ecs.components.c_levels import CLevels
 from src.ecs.components.c_lives import CLives
 
 from src.ecs.components.c_surface import CSurface
@@ -45,3 +46,17 @@ def create_lives_gui(world:esper.World, lives:int) -> int:
     world.add_component(lives_gui_entity, CLives(lives_list))
 
     return lives_gui_entity
+
+def create_levels_gui(world:esper.World, levels:int) -> int:
+    level_cfg = ServiceLocator.config_service.get("assets/cfg/interface.json")["scene_texts"]["level"]
+    level_gui_entity = world.create_entity()
+    level_list = list()
+    for i in range(levels):
+        surface = ServiceLocator.images_service.get(level_cfg["image"])
+        pos = pygame.Vector2(level_cfg["pos"]["x"] + i*surface.get_rect().width, level_cfg["pos"]["y"])
+        vel = pygame.Vector2(0, 0)
+        life_entity = create_sprite(world, pos, vel, surface)
+        level_list.append(life_entity)
+    world.add_component(level_gui_entity, CLevels(level_list))
+
+    return level_gui_entity
