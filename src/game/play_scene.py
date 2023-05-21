@@ -7,6 +7,7 @@ from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_bullet_count import system_bullet_count
 from src.ecs.systems.s_collision_player_bullet import system_collision_player_bullet
+from src.ecs.systems.s_enemies_count import system_enemies_count
 from src.ecs.systems.s_enemy_movement import system_enemy_movement
 from src.ecs.systems.s_enemy_shooting import system_enemy_shooting
 from src.ecs.systems.s_play_scene_state import system_play_state

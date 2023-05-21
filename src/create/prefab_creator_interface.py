@@ -2,6 +2,7 @@ from enum import Enum
 import pygame
 import esper
 from src.create.prefab_creator import create_sprite
+from src.ecs.components.c_levels import CLevels
 from src.ecs.components.c_lives import CLives
 from src.ecs.components.c_score import CScore
 
