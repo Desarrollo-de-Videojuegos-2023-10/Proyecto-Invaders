@@ -1,6 +1,6 @@
 import esper
 import pygame
-from src.create.prefab_creator_interface import TextAlignment, create_interface, create_text
+from src.create.prefab_creator_interface import TextAlignment, create_interface, create_text, create_levels_gui
 from src.ecs.components.c_play_state import CPlayState, PlayState
 from src.create.prefab_creator_game import create_enemies, create_game_over_input
 from src.ecs.components.c_player_state import CPlayerState
@@ -25,6 +25,11 @@ def system_play_state(world: esper.World, c_ps: CPlayState, level_cfg: dict, sta
                 c_ps.state = PlayState.GAME_OVER
                 c_ps.time = 0
                 world.delete_entity(player_entity)
+            if c_pstate.levels < 6:
+                create_levels_gui(world, c_pstate.levels)
+            else:
+                create_levels_gui(world, 1)
+                create_text(world, "0"+str(c_pstate.levels), 10, pygame.Color(255,255,255), pygame.Vector2(220,26),TextAlignment.CENTER)
         if is_lvl_complete(world):
             c_ps.state = PlayState.WIN
 
