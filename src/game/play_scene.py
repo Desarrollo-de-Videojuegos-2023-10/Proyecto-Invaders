@@ -94,7 +94,8 @@ class PlayScene(Scene):
                 system_collision_enemy_bullet(self.ecs_world)
                 system_collision_player_bullet(self.ecs_world)
                 system_score_rendering(self.ecs_world)
-            system_player_state(self.ecs_world, delta_time)
+                system_enemies_count(self.ecs_world, self, self._p_state, self.player_cfg)
+            system_player_state(self.ecs_world, delta_time, self.player_cfg)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
 
