@@ -14,7 +14,7 @@ from src.engine.service_locator import ServiceLocator
 from src.create.prefab_creator import create_square
 
 
-def create_player(world: esper.World):
+def create_player(world: esper.World, player_lives: int):
     player_cfg = ServiceLocator.config_service.get("assets/cfg/player.json")
 
     surf = ServiceLocator.images_service.get(player_cfg["image"])
@@ -23,7 +23,7 @@ def create_player(world: esper.World):
     vel = pygame.Vector2(0, 0)
     player_ent = create_sprite(world, pos, vel, surf)
     world.add_component(player_ent, CTagPlayer())
-    world.add_component(player_ent, CPlayerState(player_cfg["lives"]))
+    world.add_component(player_ent, CPlayerState(player_lives))
     return player_ent
 
 

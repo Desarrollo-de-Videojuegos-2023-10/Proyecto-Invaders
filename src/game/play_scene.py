@@ -26,7 +26,6 @@ from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_screen_bullet import system_screen_bullet
 from src.ecs.systems.s_screen_player import system_screen_player
 from src.ecs.systems.s_collision_enemy_bullet import system_collision_enemy_bullet
-# from src.ecs.systems.s_collision_player_ball import system_collision_player_ball
 import src.engine.game_engine
 from src.engine.service_locator import ServiceLocator
 
@@ -48,7 +47,10 @@ class PlayScene(Scene):
         self._player_ent = -1
         self._paused = False
 
-    def do_create(self):
+    def do_create(self, **kwargs):
+        self._score = kwargs.get("score", 0)
+        self._level_no = kwargs.get("level_no", 1)
+        self._player_lives = kwargs.get("player_lives", self.player_cfg["lives"])
         self._start_text = create_text(self.ecs_world, self.interface_cfg["start"]["text"],
                                        self.interface_cfg["start"]["size"],
                                        pygame.Color(self.interface_cfg["start"]["color"]["r"],
@@ -58,7 +60,7 @@ class PlayScene(Scene):
                                                       self.interface_cfg["start"]["pos"]["y"]),
                                        TextAlignment.CENTER)
         create_starfield(self.ecs_world)
-        create_interface(self.ecs_world, self.player_cfg["lives"])
+        create_interface(self.ecs_world, self._player_lives, score=self._score, level_no=self._level_no)
         self._c_scene_state_e = self.ecs_world.create_entity()
         self.ecs_world.add_component(self._c_scene_state_e, CPlayState())
         self._c_scene_state = self.ecs_world.component_for_entity(
@@ -67,7 +69,7 @@ class PlayScene(Scene):
         ServiceLocator.sounds_service.play(
             self.interface_cfg["start"]["sound"])
 
-        player_ent = create_player(self.ecs_world)
+        player_ent = create_player(self.ecs_world, self._player_lives)
         self._p_v = self.ecs_world.component_for_entity(player_ent, CVelocity)
         self._p_t = self.ecs_world.component_for_entity(player_ent, CTransform)
         self._p_s = self.ecs_world.component_for_entity(player_ent, CSurface)
@@ -83,7 +85,7 @@ class PlayScene(Scene):
         system_starfield_movement(self.ecs_world, delta_time)
         system_blinking(self.ecs_world, delta_time)
         system_play_state(self.ecs_world, self._c_scene_state,
-                          self.level_cfg, self._start_text, self.interface_cfg, self.player_cfg, delta_time,self)
+                          self.level_cfg, self._start_text, self.interface_cfg, delta_time,self)
 
         if not self._paused:
             system_movement(self.ecs_world, delta_time)
@@ -94,8 +96,7 @@ class PlayScene(Scene):
                 system_collision_enemy_bullet(self.ecs_world)
                 system_collision_player_bullet(self.ecs_world)
                 system_score_rendering(self.ecs_world)
-            system_player_state(self.ecs_world, delta_time, ServiceLocator.config_service.get(
-            "assets/cfg/interface.json"))
+            system_player_state(self.ecs_world, delta_time)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
 

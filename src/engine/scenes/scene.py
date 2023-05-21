@@ -22,11 +22,11 @@ class Scene:
     def clean(self):
         self.ecs_world.clear_database()
         self.do_clean()
-    
-    def switch_scene(self, new_scene_name:str):
-        self._game_engine.switch_scene(new_scene_name)
 
-    def do_create(self):
+    def switch_scene(self, new_scene_name:str, **kwargs):
+        self._game_engine.switch_scene(new_scene_name, **kwargs)
+
+    def do_create(self, **kwargs):
         pass
 
     def do_update(self, delta_time:float):
@@ -37,9 +37,9 @@ class Scene:
 
     def do_action(self, action:CInputCommand):
         pass
-    
+
     def do_clean(self):
         pass
 
-    
+
 

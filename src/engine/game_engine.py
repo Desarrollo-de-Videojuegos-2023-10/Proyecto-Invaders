@@ -34,6 +34,7 @@ class GameEngine:
         self._scenes["GAME_OVER_SCENE"] = GameOverScene(self)
         self._current_scene:Scene = None
         self._scene_name_to_switch:str = None
+        self._scene_kwargs_to_switch:dict = None
 
     def run(self, start_scene_name:str) -> None:
         self.is_running = True
@@ -47,8 +48,9 @@ class GameEngine:
             self._handle_switch_scene()
         self._do_clean()
 
-    def switch_scene(self, new_scene_name:str):
+    def switch_scene(self, new_scene_name:str, **kwargs):
         self._scene_name_to_switch = new_scene_name
+        self._scene_kwargs_to_switch = kwargs
 
     def _create(self):
         self._current_scene.do_create()
@@ -75,7 +77,7 @@ class GameEngine:
         if self._scene_name_to_switch is not None:
             self._current_scene.clean()
             self._current_scene = self._scenes[self._scene_name_to_switch]
-            self._current_scene.do_create()
+            self._current_scene.do_create(**self._scene_kwargs_to_switch)
             self._scene_name_to_switch = None
 
     def _do_action(self, action:CInputCommand):

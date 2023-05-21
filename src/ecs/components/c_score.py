@@ -1,4 +1,4 @@
 class CScore:
-    def __init__(self, hiscore=False) -> None:
-        self.score = 0
+    def __init__(self, hiscore=False, score=0) -> None:
+        self.score = score
         self.hiscore = hiscore
