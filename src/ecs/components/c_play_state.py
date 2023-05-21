@@ -13,3 +13,4 @@ class CPlayState:
     def __init__(self) -> None:
         self.state = PlayState.START
         self.time = 0
+        self.already_saved = False

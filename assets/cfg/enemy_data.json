@@ -4,7 +4,6 @@
     "movement_limit_right": 226,
     "TypeA": {
         "score_value": 30,
-        "score_value_attack": 60,
         "image": "assets/img/invaders_enemy_01.png",
         "animations": {
             "number_frames": 5,
@@ -26,7 +25,6 @@
     },
     "TypeB": {
         "score_value": 40,
-        "score_value_attack": 80,
         "image": "assets/img/invaders_enemy_02.png",
         "animations": {
             "number_frames": 5,
@@ -48,7 +46,6 @@
     },
     "TypeC": {
         "score_value": 50,
-        "score_value_attack": 100,
         "image": "assets/img/invaders_enemy_03.png",
         "animations": {
             "number_frames": 5,
@@ -70,7 +67,6 @@
     },
     "TypeD": {
         "score_value": 60,
-        "score_value_attack": 800,
         "image": "assets/img/invaders_enemy_04.png",
         "animations": {
             "number_frames": 1,

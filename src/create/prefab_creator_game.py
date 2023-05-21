@@ -113,7 +113,7 @@ def create_enemies(world: esper.World, level_cfg: dict):
 
                 enemy_entity = create_sprite(
                     world, enemy_pos, enemy_vel, enemy_surf)
-                world.add_component(enemy_entity, CTagEnemy())
+                world.add_component(enemy_entity, CTagEnemy(enemy_cfg[enemy_type]["score_value"]))
                 world.add_component(enemy_entity, CEnemyState())
                 world.add_component(enemy_entity, CAnimation(
                     enemy_cfg[enemy_type]["animations"]))

@@ -11,6 +11,7 @@ from src.ecs.systems.s_enemy_movement import system_enemy_movement
 from src.ecs.systems.s_enemy_shooting import system_enemy_shooting
 from src.ecs.systems.s_play_scene_state import system_play_state
 from src.ecs.systems.s_player_state import system_player_state
+from src.ecs.systems.s_score_rendering import system_score_rendering
 from src.ecs.systems.s_starfield_movement import system_starfield_movement
 from src.ecs.systems.s_temporary_remove import system_temporary_remove
 
@@ -91,6 +92,7 @@ class PlayScene(Scene):
                 system_bullet_count(self.ecs_world, self.current_bullets)
                 system_collision_enemy_bullet(self.ecs_world)
                 system_collision_player_bullet(self.ecs_world)
+                system_score_rendering(self.ecs_world)
             system_player_state(self.ecs_world, delta_time)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
