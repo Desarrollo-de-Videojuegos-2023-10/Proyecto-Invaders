@@ -7,7 +7,6 @@ from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_bullet_count import system_bullet_count
 from src.ecs.systems.s_collision_player_bullet import system_collision_player_bullet
-from src.ecs.systems.s_enemies_count import system_enemies_count
 from src.ecs.systems.s_enemy_movement import system_enemy_movement
 from src.ecs.systems.s_enemy_shooting import system_enemy_shooting
 from src.ecs.systems.s_play_scene_state import system_play_state
@@ -84,7 +83,7 @@ class PlayScene(Scene):
         system_starfield_movement(self.ecs_world, delta_time)
         system_blinking(self.ecs_world, delta_time)
         system_play_state(self.ecs_world, self._c_scene_state,
-                          self.level_cfg, self._start_text, self.interface_cfg, self.player_cfg, delta_time)
+                          self.level_cfg, self._start_text, self.interface_cfg, self.player_cfg, delta_time,self)
 
         if not self._paused:
             system_movement(self.ecs_world, delta_time)
@@ -95,8 +94,8 @@ class PlayScene(Scene):
                 system_collision_enemy_bullet(self.ecs_world)
                 system_collision_player_bullet(self.ecs_world)
                 system_score_rendering(self.ecs_world)
-                system_enemies_count(self.ecs_world, self, self._p_state, self.player_cfg)
-            system_player_state(self.ecs_world, delta_time, self.player_cfg)
+            system_player_state(self.ecs_world, delta_time, ServiceLocator.config_service.get(
+            "assets/cfg/interface.json"))
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
 
@@ -124,6 +123,9 @@ class PlayScene(Scene):
                                                     self._p_s.area.height))
 
         if action.name == "QUIT_TO_MENU" and action.phase == CommandPhase.START:
+            config = ServiceLocator.config_service.get("assets/cfg/interface.json")
+            config["scene_texts"]["level"] = 1
+            ServiceLocator.config_service.save("assets/cfg/interface.json", config)
             self.switch_scene("MENU_SCENE")
 
         if action.name == "PAUSE" and self._c_scene_state.state == PlayState.PLAYING:

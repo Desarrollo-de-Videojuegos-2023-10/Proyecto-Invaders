@@ -2,7 +2,6 @@ import json
 import esper
 from src.create.prefab_creator_game import create_explosion
 from src.ecs.components.c_lives import CLives
-from src.create.prefab_creator_interface import create_levels_gui
 from src.ecs.components.c_levels import CLevels
 from src.ecs.components.c_play_state import CPlayState
 from src.ecs.components.c_player_state import CPlayerState, PlayerState
@@ -23,9 +22,9 @@ def system_player_state(world: esper.World, delta_time: float, player: dict):
     c_pstate: CPlayerState
     for _, (c_s, c_t, c_pstate) in player_components:
         if c_pstate.state == PlayerState.DEAD:
-            player["level"] =  1
-            with open("assets/cfg/player.json", 'w') as archivo_nuevo:
-                json.dump(player, archivo_nuevo, indent=4)
+            config = ServiceLocator.config_service.get("assets/cfg/interface.json")
+            config["scene_texts"]["level"] = 1
+            ServiceLocator.config_service.save("assets/cfg/interface.json", config)
             c_pstate.respawn_time += delta_time
             if c_pstate.respawn_time > 3 and c_pstate.lives > -1:
                 player_cfg = ServiceLocator.config_service.get(

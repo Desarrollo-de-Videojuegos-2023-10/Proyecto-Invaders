@@ -1,3 +1,4 @@
 class CLevels:
-    def __init__(self, level:list):
-        self.levels_entities = level
+    def __init__(self, levels:list, level: int):
+        self.level = level
+        self.levels_entities = levels
