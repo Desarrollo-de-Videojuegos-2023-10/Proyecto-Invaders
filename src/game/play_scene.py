@@ -51,7 +51,7 @@ class PlayScene(Scene):
         self._score = kwargs.get("score", 0)
         self._level_no = kwargs.get("level_no", 1)
         self._player_lives = kwargs.get("player_lives", self.player_cfg["lives"])
-        self._start_text = create_text(self.ecs_world, self.interface_cfg["start"]["text"],
+        self._start_text = create_text(self.ecs_world, self.interface_cfg["start"]["text"] if self._level_no == 1 else "LEVEL " + str(self._level_no),
                                        self.interface_cfg["start"]["size"],
                                        pygame.Color(self.interface_cfg["start"]["color"]["r"],
                                                     self.interface_cfg["start"]["color"]["g"],
