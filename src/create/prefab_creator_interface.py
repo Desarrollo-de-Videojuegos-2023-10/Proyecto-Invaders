@@ -66,3 +66,17 @@ def create_interface(world:esper.World, lives:int):
                 pygame.Vector2(148, 28), TextAlignment.RIGHT)
     max_score_value = world.add_component(max_score_value, CScore(hiscore=True))
     create_lives_gui(world, lives)
+
+def create_levels_gui(world:esper.World, levels:int) -> int:
+    level_cfg = ServiceLocator.config_service.get("assets/cfg/interface.json")["scene_texts"]["level"]
+    level_gui_entity = world.create_entity()
+    level_list = list()
+    for i in range(levels):
+        surface = ServiceLocator.images_service.get(level_cfg["image"])
+        pos = pygame.Vector2(level_cfg["pos"]["x"] + i*surface.get_rect().width, level_cfg["pos"]["y"])
+        vel = pygame.Vector2(0, 0)
+        life_entity = create_sprite(world, pos, vel, surface)
+        level_list.append(life_entity)
+    world.add_component(level_gui_entity, CLevels(level_list))
+
+    return level_gui_entity
