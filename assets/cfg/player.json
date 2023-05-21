@@ -5,5 +5,6 @@
       "y": 212
   },
   "input_speed": 100,
-  "lives": 3
+  "lives": 3,
+  "level": 1
 }
