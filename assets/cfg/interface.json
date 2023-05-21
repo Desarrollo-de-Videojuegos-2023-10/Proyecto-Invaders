@@ -14,7 +14,7 @@
         "g": 144,
         "b": 255
     },
-    "high_score": 1000,
+    "high_score": 1640,
     "scene_texts": {
         "start": {
             "text": "GAME START",
@@ -67,6 +67,13 @@
             "pos": {
                 "x": 160,
                 "y": 26
+            }
+        },
+        "level": {
+            "image": "assets/img/invaders_level_flag.png",
+            "pos": {
+                "x": 200,
+                "y": 20
             }
         }
     }

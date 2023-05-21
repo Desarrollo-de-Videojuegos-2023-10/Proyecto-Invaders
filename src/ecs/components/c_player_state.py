@@ -7,7 +7,8 @@ class PlayerState(Enum):
 
 
 class CPlayerState:
-    def __init__(self, lives: int):
+    def __init__(self, lives: int, level: int):
         self.state = PlayerState.ALIVE
         self.respawn_time = 0
         self.lives = lives
+        self.levels = level
