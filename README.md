@@ -1,8 +1,8 @@
 # Proyecto Final: Introducción al desarrollo de videojuegos con ECS
 Por:
 - Juan Andrés Romero Colmenares - 202013449
-- Juan Felipe Castro - 
-- María Paula González - 
+- Juan Felipe Castro - 201818130
+- María Paula González - 202012265
 
 ## Introducción
 En esta entrega se desarrollará un videojuego con el fin de aplicar los conceptos de arquitectura ECS (Entity Component System). Para esto se utilizará el lenguaje de programación Python y la librería Pygame.
