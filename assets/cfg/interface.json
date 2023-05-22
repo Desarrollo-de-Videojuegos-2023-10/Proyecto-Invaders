@@ -15,6 +15,13 @@
         "b": 255
     },
     "high_score": 1000,
+    "logo": {
+        "image": "./assets/img/invaders_logo_title.png",
+        "pos": {
+            "x": 115,
+            "y": 70
+        }
+    },
     "scene_texts": {
         "start": {
             "text": "GAME START",
