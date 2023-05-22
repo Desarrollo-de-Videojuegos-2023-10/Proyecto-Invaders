@@ -5,6 +5,7 @@ from src.create.prefab_creator import create_sprite
 from src.ecs.components.c_animation import CAnimation
 from src.ecs.components.c_enemy_state import CEnemyState
 from src.ecs.components.c_input_command import CInputCommand
+from src.ecs.components.c_player_ability import AbilityState, CPlayerAbility
 from src.ecs.components.c_player_state import CPlayerState
 from src.ecs.components.tags.c_tag_temporary import CTagTemporary
 from src.ecs.components.tags.c_tag_bullet import BulletType, CTagBullet
@@ -24,18 +25,26 @@ def create_player(world: esper.World, player_lives: int):
     player_ent = create_sprite(world, pos, vel, surf)
     world.add_component(player_ent, CTagPlayer())
     world.add_component(player_ent, CPlayerState(player_lives))
+    world.add_component(player_ent, CPlayerAbility(player_cfg["ability_cooldown"], player_cfg["ability_duration"]))
     return player_ent
 
 
 def create_player_bullet(world: esper.World,
                          player_pos: pygame.Vector2,
-                         player_size: pygame.Vector2):
+                         player_size: pygame.Vector2,
+                         ability_state: AbilityState):
     bullet_cfg = ServiceLocator.config_service.get(
         "assets/cfg/bullet.json")["player"]
     bullet_size = pygame.Vector2(
         bullet_cfg["size"]["x"], bullet_cfg["size"]["y"])
-    color = pygame.Color(
-        bullet_cfg["color"]["r"], bullet_cfg["color"]["g"], bullet_cfg["color"]["b"])
+    if ability_state == AbilityState.SHOOTING:
+        color = pygame.Color(
+            bullet_cfg["special_color"]["r"], bullet_cfg["special_color"]["g"], bullet_cfg["special_color"]["b"]
+        )
+    else:
+        color = pygame.Color(
+            bullet_cfg["color"]["r"], bullet_cfg["color"]["g"], bullet_cfg["color"]["b"])
+
     pos = pygame.Vector2(player_pos.x + (player_size[0] / 2) - (bullet_size[0] / 2),
                          player_pos.y + (player_size[1]) - (bullet_size[1]))
     vel = pygame.Vector2(0, -bullet_cfg["speed"])
@@ -94,6 +103,10 @@ def create_game_input(world: esper.World):
     fire_action = world.create_entity()
     world.add_component(fire_action,
                         CInputCommand("PLAYER_FIRE", pygame.K_z))
+
+    ability_action = world.create_entity()
+    world.add_component(ability_action,
+                        CInputCommand("PLAYER_ABILITY", pygame.K_f))
 
 def create_game_over_input(world: esper.World):
     quit_to_menu_action = world.create_entity()

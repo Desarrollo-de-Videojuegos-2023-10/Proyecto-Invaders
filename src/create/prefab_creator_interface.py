@@ -2,6 +2,7 @@ from enum import Enum
 import pygame
 import esper
 from src.create.prefab_creator import create_sprite
+from src.ecs.components.c_changing_text import CChangingText
 from src.ecs.components.c_levels import CLevels
 from src.ecs.components.c_lives import CLives
 from src.ecs.components.c_score import CScore
@@ -65,7 +66,7 @@ def create_interface(world:esper.World, lives:int, score:int = 0, level_no:int =
     max_score_value = create_text(world, str(interface_cfg["high_score"]), interface_cfg["scene_texts"]["start"]["size"],
                 pygame.Color(interface_cfg["high_score_color"]["r"], interface_cfg["high_score_color"]["g"], interface_cfg["high_score_color"]["b"]),
                 pygame.Vector2(148, 28), TextAlignment.RIGHT)
-    max_score_value = world.add_component(max_score_value, CScore(hiscore=True, score=score))
+    world.add_component(max_score_value, CScore(hiscore=True, score=score))
     create_lives_gui(world, lives)
 
     if level_no < 6:
@@ -73,6 +74,9 @@ def create_interface(world:esper.World, lives:int, score:int = 0, level_no:int =
     else:
         create_levels_gui(world, 1, level_no)
         create_text(world, "0"+ str(level_no) if level_no < 10 else str(level_no), 8, pygame.Color(255,255,255), pygame.Vector2(220,26),TextAlignment.CENTER)
+
+    ability_text = create_text(world, "CHARGED", 8, pygame.Color(255,255,255), pygame.Vector2(13, 235), TextAlignment.LEFT)
+    world.add_component(ability_text, CChangingText("CHARGED", ServiceLocator.fonts_service.get("assets/fnt/PressStart2P.ttf", 8), pygame.Color(255,255,255)))
 
 def create_levels_gui(world:esper.World, flag_no:int, level_no:int) -> int:
     level_cfg = ServiceLocator.config_service.get("assets/cfg/interface.json")["scene_texts"]["levels"]

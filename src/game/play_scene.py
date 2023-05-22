@@ -2,10 +2,13 @@ import pygame
 from src.create.prefab_creator import create_starfield
 from src.ecs.components.c_blink_item import CBlinkItem
 from src.ecs.components.c_play_state import CPlayState, PlayState
+from src.ecs.components.c_player_ability import AbilityState, CPlayerAbility
 from src.ecs.components.c_player_state import CPlayerState, PlayerState
+from src.ecs.systems.s_ability_state import system_ability_state
 from src.ecs.systems.s_animation import system_animation
 from src.ecs.systems.s_blinking import system_blinking
 from src.ecs.systems.s_bullet_count import system_bullet_count
+from src.ecs.systems.s_charge_text import system_charging_text
 from src.ecs.systems.s_collision_player_bullet import system_collision_player_bullet
 from src.ecs.systems.s_enemy_movement import system_enemy_movement
 from src.ecs.systems.s_enemy_shooting import system_enemy_shooting
@@ -40,7 +43,9 @@ class PlayScene(Scene):
             "assets/cfg/enemy_data.json")
         self.interface_cfg = ServiceLocator.config_service.get(
             "assets/cfg/interface.json")["scene_texts"]
-        self.max_bullets = self.level_cfg["player_start"]["max_bullets"]
+        self.max_bullets = {
+            "bullet_count": self.level_cfg["player_start"]["max_bullets"]
+        }
         self.current_bullets = {
             "bullet_count": 0
         }
@@ -75,7 +80,8 @@ class PlayScene(Scene):
         self._p_s = self.ecs_world.component_for_entity(player_ent, CSurface)
         self._p_state = self.ecs_world.component_for_entity(
             player_ent, CPlayerState)
-
+        self._player_ability = self.ecs_world.component_for_entity(
+            player_ent, CPlayerAbility)
         self._paused = False
         create_game_input(self.ecs_world)
 
@@ -96,6 +102,8 @@ class PlayScene(Scene):
                 system_collision_enemy_bullet(self.ecs_world)
                 system_collision_player_bullet(self.ecs_world)
                 system_score_rendering(self.ecs_world)
+                system_ability_state(self.ecs_world, delta_time, self.max_bullets)
+                system_charging_text(self.ecs_world, self._player_ability.state)
             system_player_state(self.ecs_world, delta_time)
             system_animation(self.ecs_world, delta_time)
             system_temporary_remove(self.ecs_world)
@@ -115,13 +123,17 @@ class PlayScene(Scene):
             elif action.phase == CommandPhase.END:
                 self._p_v.vel.x -= self.player_cfg["input_speed"]
 
-        if action.name == "PLAYER_FIRE" and not self._paused and self._c_scene_state.state == PlayState.PLAYING and self.current_bullets["bullet_count"] < self.max_bullets and self._p_state.state == PlayerState.ALIVE:
+        if action.name == "PLAYER_FIRE" and not self._paused and self._c_scene_state.state == PlayState.PLAYING and self.current_bullets["bullet_count"] < self.max_bullets["bullet_count"] and self._p_state.state == PlayerState.ALIVE:
             if action.phase == CommandPhase.START:
                 create_player_bullet(self.ecs_world,
                                      pygame.Vector2(
                                          self._p_t.pos.x, self._p_t.pos.y),
                                      pygame.Vector2(self._p_s.area.width,
-                                                    self._p_s.area.height))
+                                                    self._p_s.area.height),
+                                    self._player_ability.state)
+        if action.name == "PLAYER_ABILITY" and action.phase == CommandPhase.START and self._player_ability.state == AbilityState.READY and self._c_scene_state.state == PlayState.PLAYING and self._p_state.state == PlayerState.ALIVE:
+            self._player_ability.state = AbilityState.SHOOTING
+            self.max_bullets["bullet_count"] = 1000
 
         if action.name == "QUIT_TO_MENU" and action.phase == CommandPhase.START:
             config = ServiceLocator.config_service.get("assets/cfg/interface.json")

@@ -5,5 +5,7 @@
       "y": 212
   },
   "input_speed": 100,
+  "ability_cooldown": 5,
+  "ability_duration": 5,
   "lives": 3
 }

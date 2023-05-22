@@ -15,5 +15,6 @@ def system_rendering(world:esper.World, screen:pygame.Surface):
         # SE DEBE VOLVER A CREAR LA SUPERFICIE
         if world.has_component(ent, CChangingText):
             c_txt = world.component_for_entity(ent, CChangingText)
-            c_s.surf = c_txt.font.render(c_txt.text, True, c_s.color)
+            c_s.surf = c_txt.font.render(c_txt.text, True, c_txt.color)
+            c_s.area = c_s.surf.get_rect()
         screen.blit(c_s.surf, c_t.pos, area=c_s.area)
