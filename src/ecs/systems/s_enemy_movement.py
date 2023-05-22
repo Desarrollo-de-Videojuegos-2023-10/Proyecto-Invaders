@@ -1,5 +1,5 @@
 import esper
-from src.ecs.components.c_enemy_state import CEnemyState, EnemyState, MovementDirection
+from src.ecs.components.c_enemy_state import CEnemyState, MovementDirection
 from src.ecs.components.c_transform import CTransform
 from src.engine.service_locator import ServiceLocator
 
@@ -14,9 +14,9 @@ def system_enemy_movement(world: esper.World, lvl_cfg:dict, delta_time: float):
             max_pos_left = c_t.pos.x
         elif max_pos_right is None or c_t.pos.x > max_pos_right:
             max_pos_right = c_t.pos.x
-        if c_es.movement_direction == MovementDirection.LEFT and c_es.state == EnemyState.IDLE:
+        if c_es.movement_direction == MovementDirection.LEFT:
             c_t.pos.x -= lvl_cfg["enemy_speed"] * delta_time
-        elif c_es.movement_direction == MovementDirection.RIGHT and c_es.state == EnemyState.IDLE:
+        elif c_es.movement_direction == MovementDirection.RIGHT:
             c_t.pos.x += lvl_cfg["enemy_speed"] * delta_time
 
 
