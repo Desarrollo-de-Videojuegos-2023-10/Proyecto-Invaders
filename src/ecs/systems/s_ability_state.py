@@ -1,6 +1,4 @@
-import pygame
 import esper
-from src.ecs.components.c_changing_text import CChangingText
 from src.ecs.components.c_player_ability import CPlayerAbility, AbilityState
 from src.engine.service_locator import ServiceLocator
 
