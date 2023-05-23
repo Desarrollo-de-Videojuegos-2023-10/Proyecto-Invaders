@@ -76,6 +76,21 @@
                 "y": 26
             }
         },
+        "press": {
+            "text": "PRESS Z TO START",
+            "size": 8,
+            "color": {
+                "r": 255,
+                "g": 50,
+                "b": 50
+            },
+            "pos": {
+                "x": 128,
+                "y": 160
+            },
+            "font": "assets/fnt/PressStart2P.ttf",
+            "blink_rate": 0.5
+        },
         "levels": {
             "image": "assets/img/invaders_level_flag.png",
             "pos": {

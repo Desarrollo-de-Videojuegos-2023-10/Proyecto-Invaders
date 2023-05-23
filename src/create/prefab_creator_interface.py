@@ -2,6 +2,7 @@ from enum import Enum
 import pygame
 import esper
 from src.create.prefab_creator import create_sprite
+from src.ecs.components.c_animation import CAnimation
 from src.ecs.components.c_changing_text import CChangingText
 from src.ecs.components.c_levels import CLevels
 from src.ecs.components.c_lives import CLives
@@ -48,6 +49,32 @@ def create_lives_gui(world:esper.World, lives:int) -> int:
     world.add_component(lives_gui_entity, CLives(lives_list))
 
     return lives_gui_entity
+
+def create_logo(world:esper.World):
+    logo_cfg= ServiceLocator.config_service.get("assets/cfg/interface.json")["logo"]
+    surface = ServiceLocator.images_service.get(logo_cfg["image"])
+    pos = pygame.Vector2(logo_cfg["pos"]["x"]/2 , logo_cfg["pos"]["y"])
+    vel = pygame.Vector2(0, 0)
+    create_sprite(world, pos, vel, surface)
+    
+
+def create_menu(world:esper.World, score: int =0, level_no:int=1):
+    interface_cfg = ServiceLocator.config_service.get("assets/cfg/interface.json")
+    create_text(world, "1UP", interface_cfg["scene_texts"]["start"]["size"],
+                pygame.Color(interface_cfg["title_color"]["r"], interface_cfg["title_color"]["g"], interface_cfg["title_color"]["b"]),
+                pygame.Vector2(32, 18), TextAlignment.LEFT)
+    create_text(world, "HI-SCORE", interface_cfg["scene_texts"]["start"]["size"],
+                pygame.Color(interface_cfg["title_color"]["r"], interface_cfg["title_color"]["g"], interface_cfg["title_color"]["b"]),
+                pygame.Vector2(90, 18), TextAlignment.LEFT)
+    score_values = create_text(world, "00" if score == 0 else str(score), interface_cfg["scene_texts"]["start"]["size"],
+                pygame.Color(interface_cfg["normal_color"]["r"], interface_cfg["normal_color"]["g"], interface_cfg["normal_color"]["b"]),
+                pygame.Vector2(72, 28), TextAlignment.RIGHT)
+    score_values = world.add_component(score_values, CScore(score=score))
+    max_score_value = create_text(world, str(interface_cfg["high_score"]), interface_cfg["scene_texts"]["start"]["size"],
+                pygame.Color(interface_cfg["high_score_color"]["r"], interface_cfg["high_score_color"]["g"], interface_cfg["high_score_color"]["b"]),
+                pygame.Vector2(148, 28), TextAlignment.RIGHT)
+    world.add_component(max_score_value, CScore(hiscore=True, score=score))    
+
 
 def create_interface(world:esper.World, lives:int, score:int = 0, level_no:int = 1):
     interface_cfg = ServiceLocator.config_service.get("assets/cfg/interface.json")

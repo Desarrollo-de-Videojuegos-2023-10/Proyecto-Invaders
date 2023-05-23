@@ -1,5 +1,5 @@
 import pygame
-from src.create.prefab_creator import create_starfield
+from src.create.prefab_creator import create_sprite, create_starfield
 from src.ecs.components.c_blink_item import CBlinkItem
 from src.ecs.components.c_play_state import CPlayState, PlayState
 from src.ecs.components.c_player_ability import AbilityState, CPlayerAbility
