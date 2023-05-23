@@ -17,3 +17,4 @@ La habilidad especial del jugador es unna sobrecarga de la nave que le permite a
 
 # Link a Itch.io
 El juego fue publicado en itch.io y se puede jugar en el siguiente link:
+https://elreyzero.itch.io/invaders
