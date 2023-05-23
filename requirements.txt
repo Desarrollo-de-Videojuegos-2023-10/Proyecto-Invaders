@@ -1,3 +1,5 @@
 pylint
 pygame
 esper
+pyinstaller
+pygbag
