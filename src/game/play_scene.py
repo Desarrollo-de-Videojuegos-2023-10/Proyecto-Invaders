@@ -110,6 +110,7 @@ class PlayScene(Scene):
 
     def do_clean(self):
         self._paused = False
+        self.max_bullets["bullet_count"] = self.level_cfg["player_start"]["max_bullets"]
 
     def do_action(self, action: CInputCommand):
         if action.name == "LEFT":
